@@ -1,0 +1,23 @@
+<main class="movie-grid">
+    {% for movie in movie_list %}
+        <a href="{{ movie.get_absolute_url }}">
+            <article class="movie-card">
+                <div class="movie-card__poster">
+                    {% if movie.poster %}
+                        <img src="{{ movie.poster.url }}" alt="Постер фильма {{ movie.title }}">
+                    {% else %}
+                        <!-- <img src="#" alt="Постер отсутствует"> -->
+                    {% endif %}
+                </div>
+                <div class="movie-card__content">
+                    <h2 class="movie-card__title">{{ movie.title }}</h2>
+                    <p class="movie-card__info">
+                        {{ movie.release_date|date:"Y" }} &bull; {{ movie.country }}
+                    </p>
+                </div>
+            </article>
+        </a>
+    {% empty %}
+        <p class="no-movies">В данный момент фильмов на сайте нет.</p>
+    {% endfor %}
+</main>
