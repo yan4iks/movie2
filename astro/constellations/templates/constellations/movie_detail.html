@@ -54,7 +54,7 @@
                         <td>В ролях</td>
                         <td>
                             {% for actor in movie.actors.all %}
-                                {{ actor }}{% if not forloop.last %}, {% endif %}
+                                <a href="{% url 'actor_detail' pk=actor.pk %}">{{ actor }}</a>{% if not forloop.last %}, {% endif %}
                             {% endfor %}
                         </td>
                      </tr>
@@ -62,7 +62,7 @@
                     <tr><td>Продолжительность</td><td>{{ movie.duration_in_minutes }} мин.</td></tr>
                     <tr><td>Бюджет</td><td>${{ movie.budget|floatformat:"0," }}</td></tr>
                     <tr><td>Сборы в мире</td><td>${{ movie.fees_in_world|floatformat:"0," }}</td></tr>
-                    <tr><td>Рейтинг IMDb</td><td>{{ movie.rating_imdb }}</td></tr>
+                    <tr><td>Рейтинг Кинопоиск</td><td>{{ movie.reting_imb }}</td></tr>
                 </table>
             </div>
         </div>

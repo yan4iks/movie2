@@ -1,5 +1,5 @@
 <main class="movie-grid">
-    {% for movie in movie_list %}
+    {% for movie in page_obj %}
         <a href="{{ movie.get_absolute_url }}">
             <article class="movie-card">
                 <div class="movie-card__poster">

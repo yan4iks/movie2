@@ -10,4 +10,8 @@
     </header>
 
     {% include 'constellations/includes/movie_grid.html' %}
+
+    {% if page_obj.has_other_pages %}
+        {% include 'constellations/includes/pagination.html' %}
+    {% endif %}
 {% endblock %}
