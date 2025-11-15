@@ -68,5 +68,33 @@
         </div>
         <a href="{% url 'home' %}" class="back-link">← Назад к списку фильмов</a>
     </div>
+
+    <hr style="margin: 2rem 0;">
+
+    <div class="reviews-section">
+        <h2>Отзывы пользователей</h2>
+
+        {% if user.is_authenticated %}
+            <form method="POST" action="" class="review-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn">Отправить отзыв</button>
+            </form>
+        {% else %}
+            <p>Чтобы оставить отзыв, пожалуйста, <a href="#">войдите</a> в свой аккаунт</p>
+        {% endif %}
+
+        {% for review in reviews %}
+            <div class="review">
+                <p><strong>{{ review.author.username }}</strong> (Оценка: {{ review.rating }}/5)</p>
+                <p>{{ review.text }}</p>
+                <small>{{ review.created_at|date:'d F Y, H:i' }}</small>
+            </div>
+        {% empty %}
+            <p>Отзывов к этому фильму пока нет. Будьте первым!</p>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'home' %}" class="back-link">Назад к списку фтльмов</a>
 </body>
 </html>

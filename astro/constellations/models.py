@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 class Actor(models.Model):
     first_name = models.CharField(max_length=100, verbose_name="Имя актёра")
@@ -70,4 +71,27 @@ class Movie(models.Model):
         verbose_name = "Фильм"
         verbose_name_plural = "Фильмы"
 
+class Review(models.Model):
+    RATING_CHOICES = (
+        (1, '1 - Ужасно'),
+        (2, '2 - Плохо'),
+        (3, '3 - Нормально'),
+        (4, '4 - Хорошо'),
+        (5, '5 - Отлично'),
+    )
 
+    movie = models.ForeignKey(Movie, on_delete= models.CASCADE, related_name='reviews', verbose_name='Фильм')
+
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews', verbose_name='Автор')
+
+    text = models.TextField(verbose_name='Текст отзыва')
+    rating = models.ImageField(choices= RATING_CHOICES, verbose_name='Оценка')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+
+    def __str__(self):
+        return f"Отзыв от {self.author.username} к фильму '{self.movie.title}'"
+
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+        unique_together = ('movie', 'author')

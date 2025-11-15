@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}КиноКаталог{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #1c1e21; margin: 0; padding: 2rem; }
         .container { max-width: 1280px; margin: 0 auto; }
@@ -18,12 +20,42 @@
         .movie-card__info { font-size: 0.9rem; color: #606770; }
         .movie-card-link { text-decoration: none; color: inherit; }
         .no-movies { text-align: center; font-size: 1.2rem; color: #606770; grid-column: 1 / -1; } /* Для отображения по центру сетки */
+        .swiper-button-next, .swiper-button-prev {
+            color: #1877f2;
+        }
+        .movie-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .movie-card__content {
+            flex-grow: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <header class="main-header">
+            <a href="{% url 'home' %}" class="logo">КиноКаталог</a>
+            <nav class="user-nav">
+                <a href="{% url 'director_list' %}">Режиссёры</a>
+                {% if user.is_authenticated %}
+                    <span>Привет, {{ user.username }}!</span>
+                    <a href="{% url 'logout' %}">Выйти</a>
+                {% else %}
+                    <a href="{% url 'login' %}">Войти</a>
+                    <a href="{% url 'signup' %}">Регистрация</a>
+                {% endif %}
+            </nav>
+        </header>
+        
         {% block content %}
         {% endblock %}
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    {% block scripts %}
+    {% endblock %}
+
 </body>
 </html>

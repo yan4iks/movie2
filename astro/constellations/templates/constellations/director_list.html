@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block content %}
+    <header class="header">
+        <h1>{{ title }}</h1>
+    </header>
+
+    <div class="director-list">
+        {% for director in page_obj %}
+            <div class="director-item">
+                <h3>
+                    <a href="{% url 'movies_by_director' pk=director.pk %}">
+                        {{ director.first_name }} {{ director.last_name }}
+                    </a>
+                </h3>
+            </div>
+        {% empty %}
+            <p>В каталоге пока нет ни одного режиссёра.</p>
+        {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+        {% include 'movies/includes/pagination.html' %}
+    {% endif %}
+
+    <style>
+        .director-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .director-item {
+            background-color: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+        .director-item h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        .director-item a {
+            text-decoration: none;
+            color: #1877f2;
+        }
+        .director-item a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+{% endblock %}

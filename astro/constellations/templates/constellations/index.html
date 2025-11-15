@@ -9,9 +9,78 @@
         <h1>Кинокаталог</h1>
     </header>
 
-    {% include 'constellations/includes/movie_grid.html' %}
+    <div class="swiper movie-slider">
+        <div class="swiper-wrapper">
 
-    {% if page_obj.has_other_pages %}
-        {% include 'constellations/includes/pagination.html' %}
-    {% endif %}
+                {% for movie in movies %}
+                    <div class="swiper-slide">
+                    <a href="{{ movie.get_absolute_url }}">
+                        <article class="movie-card">
+                            <div class="movie-card__poster">
+                                {% if movie.poster %}
+                                    <img src="{{ movie.poster.url }}" alt="Постер фильма {{ movie.title }}" style="border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.08);">
+                                {% else %}
+                                    <!-- Нет подходящего изображения -->
+                                {% endif %}
+                            </div>
+                            <div class="movie-card__content">
+                                <h2 class="movie-card__title">{{ movie.title }}</h2>
+                                <p class="movie-card__info">
+                                    {{ movie.release_date|date:"Y" }} • {{ movie.country }}
+                                </p>
+                            </div>
+                        </article>
+                    </a>
+                </div>
+                {% empty %}
+                    <p class="no-movies">В данный момент фильмов на сайте нет.</p>
+                {% endfor %}
+                
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+        </div>
+    </div>
 {% endblock %}
+
+<!-- Ваш предыдущий HTML-шаблон -->
+...
+<div class="swiper movie-slider">
+    <div class="swiper-wrapper">
+        ...
+    </div>
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-pagination"></div> <!-- Элемент пагинатора -->
+</div>
+...
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const swiper = new Swiper('.movie-slider', {
+            slidesPerView: 3,
+            spaceBetween: 30,
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            breakpoints: {
+                640: {
+                    slidesPerView: 1,
+                    spaceBetween: 20
+                },
+                1024: {
+                    slidesPerView: 2,
+                    spaceBetween: 30
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
+

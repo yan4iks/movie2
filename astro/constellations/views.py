@@ -1,25 +1,21 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.http import HttpResponse
 from .models import Movie, Genre, Director, Actor
+from .forms import ReviewForm
+
+from django.contrib.auth.decorators import login_not_required
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+
 
 def index(request):
     movies = Movie.objects.filter(is_published = True)
-
-    paginator = Paginator(movies, 4)
-    page_number = request.GET.get('page')
-
-    try:
-        page_obj = paginator.get_page(page_number)
-    except PageNotAnInteger:
-        page_obj = paginator.page(1)
-    except EmptyPage:
-        page_obj = paginator.page(paginator.num_pages)
-
+   
     context = {
-        # 'movie_list': movies,
-        'page_obj': page_obj,
+        'movies': movies,
         'title': "Кинокаталог - Главная"
     }
 
@@ -27,9 +23,26 @@ def index(request):
 
 def movie_detail(request, slug):
     movie = get_object_or_404(Movie, slug=slug)
+    reviews = movie.reviews.all()
+
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                review = form.save(commit=False)
+                review.movie = movie
+                review.author = request.user
+                review.save()
+                return redirect('movie_detail', slug=movie.slug)
+        else:
+            return redirect('login')
+    else:
+        form = ReviewForm()
 
     context = {
         'movie': movie,
+        'reviews': reviews,
+        'form': form,
         'title': f'Фильм {movie.title}'
     }
 
@@ -82,3 +95,24 @@ def actor_detail(request, pk):
     }
 
     return render(request, 'constellations/actor_detail.html', context=context)
+def director_list(request):
+    all_directors = Director.objects.all().order_by('last_name')
+    
+    paginator = Paginator(all_directors, 10) 
+    
+    page_number = request.GET.get('page')
+    
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj': page_obj,
+        'title': 'Все режиссёры'
+    }
+    
+    return render(request, 'constellations/director_list.html', context=context)
+
+
+class SignUpView(CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration/signup.html'

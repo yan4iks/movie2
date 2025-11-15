@@ -10,6 +10,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('constellations.urls')),
     path('', include('objects.urls')),
+    path('accounts/', include ('django.contrib.auth.urls'))
 ]
 
 if settings.DEBUG:
